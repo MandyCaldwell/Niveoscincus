@@ -40,7 +40,6 @@ TA_warm[i]<-arrhen_warm$coefficients[2]
 arrhen_cool<-lm(arrhenius_cool$lnVO2kg~arrhenius_cool$invT)
 TA_cool[i]<-arrhen_cool$coefficients[2]
 text(11,0.3,paste("TA = ",round(TA_cool[i]),sep=""))
+text(13,0.25,paste("mean mass (g) = ",round(mean(O2$initialmass),2),sep=""))
 }
-
-plot(mrates$initialmass~mrates$SVL,col=mrates$speciesme1g2mi3pr4)
 

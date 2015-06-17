@@ -1,34 +1,17 @@
 ############# ectotherm model parameters ################################
 
-setwd("source/") # set the working directory where the fortran program is
-cmnd<- "rcmd SHLIB ectotherm.f Aboveground.f Allom.f ANCORR.f Belowground.f BURROWIN.f COND.f CONFAC.f Deb_baby.f DRYAIR.f Dsub.f Fun.f Funskin.f Gear.f JAC.f Met.f Osub.f RADIN.f RADOUT.f Resp.f Seldep.f Sevap.f SHADEADJUST.f Solar.f Thermo~1.f Timcon.f Traphr.f VAPPRS.f WATER.f WETAIR.f ZBRAC.f ZBRENT.f CONV.f Breed.f DEVRESET.f Wings.f Trapzd.f Wing_Solar.f Rytrec.f QTRAP.f Qromb.f Polint.f Parect.f Func.f Btrflalom.f Adjrec.f funwing.f ZBRACwing.f ZBRENTwing.f Deb_insect.f Deb.f "
-#R CMD SHLIB ectotherm.f Aboveground.f Allom.f ANCORR.f Belowground.f BURROWIN.f COND.f CONFAC.f Deb_baby.f DRYAIR.f Dsub.f Fun.f Gear.f JAC.f Met.f Osub.f RADIN.f RADOUT.f Resp.f Seldep.f Sevap.f SHADEADJUST.f Solar.f Thermo~1.f Timcon.f Traphr.f VAPPRS.f WATER.f WETAIR.f ZBRAC.f ZBRENT.f CONV.f Breed.f DEVRESET.f Wings.f Trapzd.f Wing_Solar.f Rytrec.f QTRAP.f Qromb.f Polint.f Parect.f Func.f Btrflalom.f Adjrec.f funwing.f ZBRACwing.f ZBRENTwing.f Deb_insect.f Deb.f
-system(cmnd) # run the compilation
-file.copy('ectotherm.dll','../ectotherm.dll',overwrite=TRUE)
-setwd("..")
-
-# get input microclimate files
-file.copy('/git/micro_australia/metout.csv','metout.csv',overwrite=TRUE)
-file.copy('/git/micro_australia/shadmet.csv','shadmet.csv',overwrite=TRUE)
-file.copy('/git/micro_australia/soil.csv','soil.csv',overwrite=TRUE)
-file.copy('/git/micro_australia/shadsoil.csv','shadsoil.csv',overwrite=TRUE)
-file.copy('/git/micro_australia/rainfall.csv','rainfall.csv',overwrite=TRUE)
-file.copy('/git/micro_australia/ectoin.csv','ectoin.csv',overwrite=TRUE)
-file.copy('/git/micro_australia/DEP.csv','DEP.csv',overwrite=TRUE)
-file.copy('/git/micro_australia/MAXSHADES.csv','MAXSHADES.csv',overwrite=TRUE)
-
-microin<-"" # subfolder containing the microclimate input data
-
+microin<-"/git/Niveoscincus/microclimates/Orford 2000_2013/" # subfolder containing the microclimate input data
+project.dir<-getwd()
 # simulation settings
 mac<-0 # choose mac (1) or pc (0) 
 live<-1 # live (metabolism) or dead animal?
 enberr<-0.0002 # tolerance for energy balance
 timeinterval<-365 # number of time intervals in a year
-ystart<-read.csv('ectoin.csv')[7,2]
-yfinish<-read.csv('ectoin.csv')[8,2]
-nyears<-ceiling(nrow(read.csv('rainfall.csv'))/365) # number of years the simulation runs for (work out from input data)
+ystart<-read.csv(paste(microin,'ectoin.csv',sep=""))[7,2]
+yfinish<-read.csv(paste(microin,'ectoin.csv',sep=""))[8,2]
+nyears<-ceiling(nrow(read.csv(paste(microin,'rainfall.csv',sep="")))/365) # number of years the simulation runs for (work out from input data)
 write_input<-0 # write input into 'csv input' folder? (1 yes, 0 no)
-longlat<-c(read.csv('ectoin.csv')[3,2],read.csv('ectoin.csv')[4,2])
+longlat<-c(read.csv(paste(microin,'ectoin.csv',sep=""))[3,2],read.csv(paste(microin,'ectoin.csv',sep=""))[4,2])
 grasshade<-0 # use grass shade values from microclimate model as min shade values (1) or not (0)? (simulates effect of grass growth on shading, as a function of soil moisture)
 
 # habitat settings
@@ -92,7 +75,7 @@ PTUREA<-0. # %, water in excreted nitrogenous waste
 FoodWater<-82#82 # 82%, water content of food (from Shine's thesis, clover)
 minwater<-15 # %, minimum tolerated dehydration (% of wet mass) - prohibits foraging if greater than this
 raindrink<-0. # daily rainfall (mm) required for animal to rehydrate from drinking (zero means standing water always available)
-gutfill<-75 # % gut fill at which satiation occurs - if greater than 100%, animal always tries to forage
+gutfill<-101 # % gut fill at which satiation occurs - if greater than 100%, animal always tries to forage
 
 # behavioural traits
 dayact<-1 # diurnal activity allowed (1) or not (0)?
@@ -138,7 +121,7 @@ MR_2<-0.8
 MR_3<-0.038
 
 ################### Dynamic Enregy Budget Model Parameters ################
-debpars<-as.data.frame(read.csv('c:/DEB/Niveoscincus/DEB_pars_Niveoscincus_ocellatus_lowlands.csv',header=FALSE))$V1
+debpars<-as.data.frame(read.csv('DEB models/Niveoscincus_occelatus/DEB_pars_Niveoscincus_ocellatus_lowlands.csv',header=FALSE))$V1
 fract<-1
 f<-1.
 MsM<-186.03*6. # J/cm3 produces a stomach volume of 5.3 cm3/100 g, as measured for Disosaurus dorsalis, adjusted for Egernia cunninghami
@@ -296,11 +279,12 @@ mh<-0.5   # survivorship of hatchling in first year
 wilting<-1
 ystrt<-0
 
-setwd("c:/git/ectotherm/")
+setwd("/git/ectotherm/")
 #set up call to NicheMapR function
 niche<-list(y_EV_l=y_EV_l,S_instar=S_instar,s_j=s_j,clutch_ab=clutch_ab,wilting=wilting,ystrt=ystrt,soilmoisture=soilmoisture,write_input=write_input,minshade=minshade,maxshade=maxshade,REFL=REFL,nyears=nyears,enberr=enberr,FLTYPE=FLTYPE,SUBTK=SUBTK,soilnode=soilnode,rinsul=rinsul,lometry=lometry,Flshcond=Flshcond,Spheat=Spheat,Andens=Andens,ABSMAX=ABSMAX,ABSMIN=ABSMIN,ptcond=ptcond,ctmax=ctmax,ctmin=ctmin,TMAXPR=TMAXPR,TMINPR=TMINPR,TPREF=TPREF,DELTAR=DELTAR,skinwet=skinwet,extref=extref,dayact=dayact,nocturn=nocturn,crepus=crepus,burrow=burrow,CkGrShad=CkGrShad,climb=climb,fosorial=fosorial,rainact=rainact,actrainthresh=actrainthresh,container=container,conth=conth,contw=contw,rainmult=rainmult,andens_deb=andens_deb,d_V=d_V,d_E=d_E,eggdryfrac=eggdryfrac,mu_X=mu_X,mu_E=mu_E,mu_V=mu_V,mu_P=mu_P,kappa_X_P=kappa_X_P,mu_X=mu_X,mu_E=mu_E,mu_V=mu_V,mu_P=mu_P,nX=nX,nE=nE,nV=nV,nP=nP,N_waste=N_waste,T_REF=T_REF,TA=TA,TAL=TAL,TAH=TAH,TL=TL,TH=TH,z=z,kappa=kappa,kappa_X=kappa_X,p_Mref=p_Mref,v_dotref=v_dotref,E_G=E_G,k_R=k_R,MsM=MsM,delta=delta,h_aref=h_aref,viviparous=viviparous,k_J=k_J,E_Hb=E_Hb,E_Hj=E_Hj,E_Hp=E_Hp,frogbreed=frogbreed,frogstage=frogstage,clutchsize=clutchsize,v_init=v_init,E_init=E_init,E_H_init=E_H_init,batch=batch,breedrainthresh=breedrainthresh,daylengthstart=daylengthstart,daylenghtfinish=daylengthfinish,photodirs=photodirs,photodirf=photodirf,photostart=photostart,photofinish=photofinish,amass=amass,customallom=customallom,E_Egg=E_Egg,PTUREA=PTUREA,PFEWAT=PFEWAT,FoodWater=FoodWater,DEB=DEB,MR_1=MR_1,MR_2=MR_2,MR_3=MR_3,EMISAN=EMISAN,FATOSK=FATOSK,FATOSB=FATOSB,f=f,minwater=minwater,s_G=s_G,K=K,X=X,flyer=flyer,flyspeed=flyspeed,maxdepth=maxdepth,mindepth=mindepth,ctminthresh=ctminthresh,ctkill=ctkill,metab_mode=metab_mode,stages=stages,arrhenius=arrhenius,startday=startday,raindrink=raindrink,reset=reset,gutfill=gutfill,TBASK=TBASK,TEMERGE=TEMERGE,p_Xm=p_Xm,flymetab=flymetab,live=live,continit=continit,wetmod=wetmod,thermal_stages=thermal_stages,behav_stages=behav_stages,water_stages=water_stages,stage=stage,ma=ma,mi=mi,mh=mh,aestivate=aestivate,depress=depress,contype=contype,rainmult=rainmult,conthole=conthole,contonly=contonly,contwet=contwet,microin=microin,mac=mac,grasshade=grasshade)
 source('NicheMapR_Setup_ecto.R')
 nicheout<-NicheMapR_ecto(niche)
+setwd(project.dir)
 
 # retrieve output
 metout<-as.data.frame(nicheout$metout)[1:(nyears*365*24),]
@@ -352,6 +336,17 @@ colnames(rainfall)<-c("dates","rainfall")
 ############### plot results ######################
 library(lattice)
 
+plot(debout$SVL~debout$dates,type='l',ylim=c(20,70))
+
+Growth<-read.csv('c:/NicheMapR_Working/projects/Niveoscincus/N_ocellatus_Orford_growth.csv')
+Growth$date<-as.POSIXct(Growth$date,format='%d/%m/%Y')
+points(Growth$SVL~Growth$date,col='red')
+
+Growth_skeleto<-read.csv('c:/NicheMapR_Working/projects/Niveoscincus/N_ocellatus_Orford_growth_skeleto.csv')
+Growth_skeleto<-subset(Growth_skeleto,site=='Orford' & sex!='m')
+Growth_skeleto$date<-as.POSIXct(Growth_skeleto$date,format='%d/%m/%Y')
+points(Growth_skeleto$svl~Growth_skeleto$date,col='blue')
+
 # environ<-subset(environ,VEL!=0)
 # plotenviron<-subset(environ,YEAR==1)
 # plotenviron<-environ
@@ -369,16 +364,7 @@ plot(plotdebout$WETMASS~plotdebout$dates,type='l')
 plot(debout$CUMBATCH~debout$dates,type='l')
 points(debout$CUMREPRO~debout$dates,type='l',col='red')
 
-plot(debout$SVL~debout$dates,type='l',ylim=c(20,70))
 
-Growth<-read.csv('c:/NicheMapR_Working/projects/Niveoscincus/N_ocellatus_Orford_growth.csv')
-Growth$date<-as.POSIXct(Growth$date,format='%d/%m/%Y')
-points(Growth$SVL~Growth$date,col='red')
-
-Growth_skeleto<-read.csv('c:/NicheMapR_Working/projects/Niveoscincus/N_ocellatus_Orford_growth_skeleto.csv')
-Growth_skeleto<-subset(Growth_skeleto,site=='Orford' & sex!='m')
-Growth_skeleto$date<-as.POSIXct(Growth_skeleto$date,format='%d/%m/%Y')
-points(Growth_skeleto$svl~Growth_skeleto$date,col='blue')
 
 subdate<-subset(environ, format(environ$dates,"%y/%m")=="00/03")
 subdate<-environ
@@ -396,32 +382,46 @@ abline(TPREF,0,lty=2,col='orange',lwd=2)
 with(metout,points(TALOC~dates,type='l',col='green'))
 with(rainfall,points(rainfall~dates,type='h',col='light blue'))
 abline(20,0,col='grey',lty=2)
-
-
-
-#with(plotenviron, plot(TC~dates,ylim=c(-10,40),type = "l",col='grey'))
-#abline(TMAXPR,0,lty=2,col='red',lwd=2)
-#abline(TMINPR,0,lty=2,col='blue',lwd=2)
-#abline(ctmin,0,lty=2,col='cyan',lwd=2)
-#abline(TPREF,0,lty=2,col='orange',lwd=2)
-
-#with(plotenviron, points(ACT*5~dates,type = "l",col="orange"))
-#with(plotenviron, points(SHADE/10~dates,type = "l",col="green"))
 with(plotenviron, points(DEP/10~dates,type = "l",col="brown"))
-#with(metout, points(TAREF~dates,type = "l",col="blue"))
 abline(TMAXPR,0,lty=2,col='red',lwd=2)
 abline(TMINPR,0,lty=2,col='blue',lwd=2)
 abline(ctmin,0,lty=2,col='cyan',lwd=2)
 abline(TPREF,0,lty=2,col='orange',lwd=2)
 
+# code to get constant temperature equivalent (CTE) based on Arrhenius temperature function
 
+# reference temp and 5 parameters for the Arrhenius response curve
 T_REF<-20 # degrees C, reference temperature - correction factor is 1 for this temperature
-TA<-10191
-TAL<-50000
-TAH<-90000
-TL<-273+10
-TH<-273+37
-TC<-environ$TC
+TA<-10191 # Arrhenius temperture
+TAL<-50000 # Arrhenius temperature at lower temperature threshold
+TAH<-90000 # Arrhenius temperature at upper temperature threshold
+TL<-273+10 # lower temperature threshold
+TH<-273+37 # upper temperature threshold 
+
+temps<-seq(0,50,.25) # dummy temps for demo plot of response curve
+plot(as.numeric(exp(TA*(1/(273+T_REF)-1/(273+temps)))/(1+exp(TAL*(1/(273+temps)-1/TL))+exp(TAH*(1/TH-1/(273+temps)))))~temps,type='l',ylab='correction factor',xlab='body temperature deg C',main='5 parameter Arrhenius thermal response curve')
+
+TC<-environ$TC # temps from simulation to be used to estimate CTE
+
+TempCorr<-as.numeric(exp(TA*(1/(273+T_REF)-1/(273+TC)))/(1+exp(TAL*(1/(273+TC)-1/TL))+exp(TAH*(1/TH-1/(273+TC))))) # convert Tb each hour to temperature correction factor
+TempCorr_mean<-mean(TempCorr) # get mean temperature correction factor
+TempCorr_mean # report value to console
+getTb<-function(Tb){ # function finding the difference between a temperature correction factor for a specified Tb compared to the mean calculated one (aim to make this zero)
+      x<-exp(TA*(1/(273+T_REF)-1/(273+Tb)))/(1+exp(TAL*(1/(273+Tb)-1/TL))+exp(TAH*(1/TH-1/(273+Tb))))-TempCorr_mean
+   }
+CTE<-uniroot(f=getTb,c(TL-273,TH-273),check.conv=TRUE)$root # search for a Tb (CTE) that gives the same temperature correction factor as the mean of the simulated temperature corrections
+mean(TC) # report mean Tb to screen
+CTE # report constant temperature equivalent to screen
+
+
+
+
+
+
+
+
+
+
   #summer<-subset(environ, format(environ$dates, "%m")== "10" | format(environ$dates, "%m")== "11" | format(environ$dates, "%m")== "12" | format(environ$dates, "%m")== "01" | format(environ$dates, "%m")== "02" | format(environ$dates, "%m")== "03" )
   #growth<-subset(environ, format(environ$dates, "%m")== "01" | format(environ$dates, "%m")== "02" | format(environ$dates, "%m")== "03" | format(environ$dates, "%m")== "04" | format(environ$dates, "%m")== "05" | format(environ$dates, "%m")== "06" | format(environ$dates, "%m")== "07" | format(environ$dates, "%m")== "08" | format(environ$dates, "%m")== "09" | format(environ$dates, "%m")== "10" )
   #summer_soil<-subset(soil, format(soil$dates, "%m")== "12")
@@ -456,155 +456,3 @@ mean(TC)
 
 Tb<-27.2 # put your guess in here and then run the next line to see what TC that implies
 exp(TA*(1/(273+T_REF)-1/(273+Tb)))/(1+exp(TAL*(1/(273+Tb)-1/TL))+exp(TAH*(1/TH-1/(273+Tb))))
-addTrans <- function(color,trans)
-{
-  # This function adds transparancy to a color.
-  # Define transparancy with an integer between 0 and 255
-  # 0 being fully transparant and 255 being fully visable
-  # Works with either color and trans a vector of equal length,
-  # or one of the two of length 1.
-  
-  if (length(color)!=length(trans)&!any(c(length(color),length(trans))==1)) stop("Vector lengths not correct")
-  if (length(color)==1 & length(trans)>1) color <- rep(color,length(trans))
-  if (length(trans)==1 & length(color)>1) trans <- rep(trans,length(color))
-  
-  num2hex <- function(x)
-  {
-    hex <- unlist(strsplit("0123456789ABCDEF",split=""))
-    return(paste(hex[(x-x%%16)/16+1],hex[x%%16+1],sep=""))
-  }
-  rgb <- rbind(col2rgb(color),trans)
-  res <- paste("#",apply(apply(rgb,2,num2hex),2,paste,collapse=""),sep="")
-  return(res)
-}
-
-
-setwd("c:/NicheMapR_Working/projects/pitgrid/") # go to the folder with the pitgrid dataset
-pitgrid_raw<-read.csv('pitgrid_raw.csv') # read in raw pitgrid dataset
-colnames(pitgrid_raw)<-c('Survey','Date','Species.Code','Site.Pit','Mark','Recapture','SSR','Age','Sex','SVLmm','Tailmm','Regenerated','Weightgm','Comments','Recapture.Comments','Counter','Valid.Data')
-pitgrid_raw$Date<-strptime(pitgrid_raw$Date, "%d/%m/%Y")
-pitgrid_raw$Date<-format(pitgrid_raw$Date, "%d/%m/%Y")
-
-
-trim <- function (x) gsub("^\\s+|\\s+$", "", x)
-pitgrid_raw$Species.Code <- gsub('/', '_', pitgrid_raw$Species.Code) # remove slashes
-pitgrid_raw$Species.Code <- gsub(' ', '_', pitgrid_raw$Species.Code) # remove spaces
-pitgrid_raw$Species.Code <- gsub('sp.', 'sp', pitgrid_raw$Species.Code) # remove full stops
-pitgrid_raw$Species.Code<-trim(pitgrid_raw$Species.Code) #get rid of leading and trailing white space in species names
-species_list<-unique(pitgrid_raw$Species.Code) # get the list of species in the data set
-
-species<-"Rhynchoedura_ornata"
-data<-pitgrid_raw
-a<-(pitgrid_raw$Species.Code==species)==TRUE
-a[a==TRUE]<-1
-a[a==FALSE]<-0
-data<-cbind(pitgrid_raw,a)
-data$dates<-as.POSIXct(as.Date(data$Date,"%d/%m/%Y"))-3600*6-3600*24
-data<-data[,18:19]
-data_count<-aggregate(data$a,by=list(data$dates),sum)
-
-
-colnames(data_count)<-c("dates","count")
-plotenviron<-as.data.frame(environ)
-plotenviron1<-merge(data_count,plotenviron,all.y = TRUE)
-
-for(i in 1991:2009){
-yeartoplot<-as.character(i)
-plotenviron2 <-subset(plotenviron1, format(plotenviron$dates, "%Y/%m")==paste(yeartoplot,"/11",sep=""))
-plotenviron_night<-subset(metout,ZEN!=90)
-plotenviron_night$TIME<-plotenviron_night$TIME/60
-plotenviron_night$DAY<-plotenviron_night$JULDAY+(as.numeric(format(plotenviron_night$dates, '%Y'))-1990)*365
-plotenviron_night<-subset(plotenviron_night,format(plotenviron_night$dates, "%Y/%m")==paste(yeartoplot,"/11",sep=""))
-plotenviron_bask <- subset(plotenviron2,  subset=(ACT>=1 & TC>=TMINPR))
-plotenviron_forage <- subset(plotenviron2,  subset=(ACT>1))
-plotenviron_trap <- subset(plotenviron2,  subset=(ACT>=1 & SHADE==0 & TC>=TMINPR))
-plotenviron_presence<-subset(plotenviron2,plotenviron2$count>0)
-plotenviron_absence<-subset(plotenviron2,plotenviron2$count==0)
-
-with(plotenviron_night, {plot(TIME~DAY, ylim=c(0,25),xlab = "day of year",ylab = "hour of day",cex=1,col=addTrans("dark grey",50),pch=16,main=i)})
-with(plotenviron_trap, {points((TIME-1)~DAY, ylim=c(0,25),xlab = "day of year",ylab = "hour of day",cex=1,col='black',pch=15)})
-with(plotenviron_presence, {points((TIME-1)~DAY, ylim=c(0,25),xlab = "day of year",ylab = "hour of day",cex=1,col='blue',pch=15)})
-with(plotenviron_absence, {points((TIME-1)~DAY, ylim=c(0,25),xlab = "day of year",ylab = "hour of day",cex=1,col='red',pch=15)})
-
-plotrainfall <- subset(rainfall,format(dates, "%Y")==yeartoplot)
-doy2<-strptime(format(plotrainfall$dates, "%y/%m/%d"), "%y/%m/%d")$yday+1
-plotrainfall<-cbind(plotrainfall,doy2)
-plotrainfall$DAY<-plotrainfall$doy2+(as.numeric(format(plotrainfall$dates, '%Y'))-1990)*365
-
-with(plotrainfall, {points(rainfall~DAY, ylim=c(0,25),xlab = "day of year",ylab = "hour of day",col='light blue',type='h')})
-with(plotenviron_presence, {points(count~DAY, ylim=c(0,25),xlab = "day of year",ylab = "hour of day",type='l',col='green')})
-
-}
-
-act<-aggregate(plotenviron1$ACT,by=list(format(plotenviron1$dates, "%y/%m/%d")),sum)
-act2<-aggregate(plotenviron1$count,by=list(format(plotenviron1$dates, "%y/%m/%d")),max,na.rm=TRUE)
-act3<-cbind(act$Group.1,act$x,act2$x)
-act3<-as.data.frame(act3)
-act3$V1<-as.Date(act3$V1,"%y/%m/%d")
-act4<-subset(act3,act3$V3!="-Inf")
-act4$V2<-as.numeric(as.character(act4$V2))
-act4$V3<-as.numeric(as.character(act4$V3))
-colnames(act4)<-c('date','pred','obs')
-plot(act4$pred~act4$obs)
-#dailymin<-aggregate(metout$TALOC,by=list(format(metout$dates, "%y/%m/%d")),min)
-#aa<-subset(dailymin,x>26)
-#plot(aa$x~as.Date(aa$Group.1,"%y/%m/%d",ylim=c(26,35),xlim=c(min(metout$dates),max(metout$dates))),type='p')
-
-
-speciestocheck<-"Menetia greyii"
-
-# temp of day before
-
-# histogram of max air temps for all captures
-alldata<-read.csv('c:/NicheMapR_Working/projects/pitgrid/cause_of_death.csv')
-alldata<-subset(alldata,Species.Code==speciestocheck)
-max_air<-aggregate(metout$TAREF,by=list(format(dates,"%y/%m/%d")),max)
-max_air$Group.1<-as.Date(format(as.Date(max_air$Group.1,"%y/%m/%d"),"%d/%m/%Y"),"%d/%m/%Y")
-colnames(max_air)<-c("Date","Tmax")
-max_air$Date<-max_air$Date-1 # get day before
-max_air$Date<-format(max_air$Date,"%d/%m/%Y")
-alldata_temperature<-merge(max_air,alldata)
-hist(alldata_temperature$Tmax,main=paste(speciestocheck,"Tmax day before"))
-histo<-hist(alldata_temperature$Tmax,plot=FALSE)
-
-# histogram of max air temps for all deaths
-alldata<-read.csv('c:/NicheMapR_Working/projects/pitgrid/cause_of_death.csv')
-alldata<-alldata[1:518,]
-alldata<-subset(alldata,cause.of.death=="unknown")
-alldata<-subset(alldata,Species.Code==speciestocheck)
-max_air<-aggregate(metout$TAREF,by=list(format(dates,"%y/%m/%d")),max)
-max_air$Group.1<-as.Date(format(as.Date(max_air$Group.1,"%y/%m/%d"),"%d/%m/%Y"),"%d/%m/%Y")
-colnames(max_air)<-c("Date","Tmax")
-max_air$Date<-max_air$Date-1 # get day before
-max_air$Date<-format(max_air$Date,"%d/%m/%Y")
-alldata_temperature<-merge(max_air,alldata)
-hist(alldata_temperature$Tmax,add=TRUE,col='red',breaks=histo$breaks)
-
-
-# temp of day trap checked
-
-# histogram of max air temps for all captures
-alldata<-read.csv('c:/NicheMapR_Working/projects/pitgrid/cause_of_death.csv')
-alldata<-subset(alldata,Species.Code==speciestocheck)
-max_air<-aggregate(metout$TAREF,by=list(format(dates,"%y/%m/%d")),max)
-max_air$Group.1<-as.Date(format(as.Date(max_air$Group.1,"%y/%m/%d"),"%d/%m/%Y"),"%d/%m/%Y")
-colnames(max_air)<-c("Date","Tmax")
-max_air$Date<-max_air$Date # get day before
-max_air$Date<-format(max_air$Date,"%d/%m/%Y")
-alldata_temperature<-merge(max_air,alldata)
-hist(alldata_temperature$Tmax,main=paste(speciestocheck,"Tmax day checked"))
-histo<-hist(alldata_temperature$Tmax,plot=FALSE)
-
-# histogram of max air temps for all deaths
-alldata<-read.csv('c:/NicheMapR_Working/projects/pitgrid/cause_of_death.csv')
-alldata<-alldata[1:518,]
-alldata<-subset(alldata,cause.of.death=="unknown")
-alldata<-subset(alldata,Species.Code==speciestocheck)
-max_air<-aggregate(metout$TAREF,by=list(format(dates,"%y/%m/%d")),max)
-max_air$Group.1<-as.Date(format(as.Date(max_air$Group.1,"%y/%m/%d"),"%d/%m/%Y"),"%d/%m/%Y")
-colnames(max_air)<-c("Date","Tmax")
-max_air$Date<-max_air$Date # get day before
-max_air$Date<-format(max_air$Date,"%d/%m/%Y")
-alldata_temperature<-merge(max_air,alldata)
-hist(alldata_temperature$Tmax,add=TRUE,col='red',breaks=histo$breaks)
-

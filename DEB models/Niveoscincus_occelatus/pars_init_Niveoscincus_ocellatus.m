@@ -53,7 +53,7 @@ par.T_A   = 10191;   free.T_A   = 0;    units.T_A = 'K';        label.T_A = 'T_A
 par.T_AL   = 50000;   free.T_AL   = 0;   units.T_AL = 'K';       label.T_AL = 'T_AL';      % Arrhenius temperature
 par.T_AH   = 90000;   free.T_AH   = 0;   units.T_AH = 'K';       label.T_AH = 'T_AH';      % Arrhenius temperature
 par.T_L   = T_C+10;   free.T_L   = 0;    units.T_L = 'K';        label.T_L = 'T_L';      % Arrhenius temperature
-par.T_H   = T_C+35;   free.T_H   = 0;    units.T_H = 'K';        label.T_H = 'T_H';      % Arrhenius temperature
+par.T_H   = T_C+37;   free.T_H   = 0;    units.T_H = 'K';        label.T_H = 'T_H';      % Arrhenius temperature
 par.del_M = 0.24777; free.del_M = 1;    units.del_M = '-';      label.del_M = 'del_M';  % shape coefficient
 
 % environmental parameters (temperatures are in data)

@@ -61,27 +61,27 @@ metadata.address  = {'School of BioSciences, The University of Melbourne, 3010, 
 
 % age 0 is at onset of embryo development
 data.ab = 92;      units.ab = 'd';    label.ab = 'age at birth';                bibkey.ab = 'Caldwell_unpub';    
-  temp.ab = T_C + 19.5;  bibkey.ab = 'Caldwell_unpub'; % K, temperature;
+  temp.ab = T_C + 19.5;  bibkey.ab = 'Caldwell_unpub'; % K, temperature, based on ;
   % observed age at birth is frequently larger than ab, because of diapauzes during incubation
 data.ap = data.ab+1*365;     units.ap = 'd';    label.ap = 'age at puberty';              bibkey.ap = 'Caldwell_unpub';
-  temp.ap = T_C + 18.88;  bibkey.ap = 'Caldwell_unpub'; % K, temperature; 
+  temp.ap = T_C + 18.88;  bibkey.ap = 'Caldwell_unpub'; % K, temperature, based on simulation of Tb from 2000-2013 at Orford, see last lines of Niveoscincus_ocellatus_lowland traits.R;; 
   % observed age at puberty is frequently larger than ap, 
   %   because allocation to reproduction starts before first eggs appear
 data.am = 13*365;     units.am = 'd';    label.am = 'life span';                   bibkey.am = 'Caldwell_unpub';   
-  temp.am = T_C + 18.88;  bibkey.am = 'Caldwell_unpub'; % K, temperature; 
+  temp.am = T_C + 18.88;  bibkey.am = 'Caldwell_unpub'; % K, temperature, based on simulation of Tb from 2000-2013 at Orford, see last lines of Niveoscincus_ocellatus_lowland traits.R;; 
 % (accounting for aging only) 
 
 % Please specify what type of length measurement is used for your species.
 % We put here snout-to-vent length, but you should change this depending on your species:
-data.Lb  = 2.962;   units.Lb  = 'cm';   label.Lb  = 'snout to vent length at birth';    bibkey.Lb  = 'Anon2015';
-data.Lp  = 5.0;   units.Lp  = 'cm';   label.Lp  = 'snout to vent length at puberty';  bibkey.Lp  = {'Anon2015';'Wiki'};
-data.Li  = 7.3;   units.Li  = 'cm';   label.Li  = 'ultimate snout to vent length';    bibkey.Li  = 'Wiki';
-data.Wdb = 0.55*0.3; units.Wdb = 'g';    label.Wdb = 'dry weight at birth';              bibkey.Wdb = 'Anon2015';
-data.Wdp = 2.4*0.3;   units.Wdp = 'g';    label.Wdp = 'dry weight at puberty';            bibkey.Wdp = 'Anon2015';
-data.Wdi = 8.16*0.3;   units.Wdi = 'g';    label.Wdi = 'ultimate dry weight';              bibkey.Wdi = 'Wiki';
-data.Ri  = 5/365;    units.Ri  = '#/d';  label.Ri  = 'maximum reprod rate';              bibkey.Ri  = 'Wiki';   
+data.Lb  = 2.962;   units.Lb  = 'cm';   label.Lb  = 'snout to vent length at birth';    bibkey.Lb  = 'Caldwell_unpub';
+data.Lp  = 5.0;   units.Lp  = 'cm';   label.Lp  = 'snout to vent length at puberty';  bibkey.Lp  = 'Caldwell_unpub';
+data.Li  = 7.3;   units.Li  = 'cm';   label.Li  = 'ultimate snout to vent length';    bibkey.Li  = 'Caldwell_unpub';
+data.Wdb = 0.55*0.3; units.Wdb = 'g';    label.Wdb = 'dry weight at birth';              bibkey.Wdb = 'Caldwell_unpub';
+data.Wdp = 2.4*0.3;   units.Wdp = 'g';    label.Wdp = 'dry weight at puberty';            bibkey.Wdp = 'Caldwell_unpub';
+data.Wdi = 8.16*0.3;   units.Wdi = 'g';    label.Wdi = 'ultimate dry weight';              bibkey.Wdi = 'Caldwell_unpub';
+data.Ri  = 5/365;    units.Ri  = '#/d';  label.Ri  = 'maximum reprod rate';              bibkey.Ri  = 'Caldwell_unpub';   
   % for an individual of ultimate length Li 
-  temp.Ri = T_C +  18.88;  bibkey.Ri = 'Caldwell_unpub'; % K, temperature; 
+  temp.Ri = T_C +  18.88;  bibkey.Ri = 'Caldwell_unpub'; % K, temperature, based on simulation of Tb from 2000-2013 at Orford, see last lines of Niveoscincus_ocellatus_lowland traits.R; 
  
 % uni-variate data
 

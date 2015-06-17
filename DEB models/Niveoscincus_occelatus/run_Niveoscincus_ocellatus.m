@@ -25,10 +25,10 @@ estim_options('max_fun_evals',5e4);  % set options for parameter estimation
 
 estim_options('pars_init_method', 2);
 estim_options('results_output', 1);
-estim_options('method', 'no');
+estim_options('method', 'nm');
 
 estim_pars; % run estimation
 load('results_Niveoscincus_ocellatus')
 [stat,txt_stat]=statistics_std(par,chem,293,293,1,'std');
-results=vertcat(metapar.T_ref,par.T_A,par.T_H,par.T_L,par.T_AL,par.T_AH,par.f,par.z,par.del_M,par.F_m,par.kap_X,par.kap_P,par.v,par.kap,par.kap_R,par.p_M,par.p_T,par.k_J,par.E_G,par.E_Hb,par.E_Hp,par.h_a,par.s_G,stat.E_0,stat.L_b,stat.L_i);
+results=vertcat(metapar.T_ref,par.T_A,par.T_L,par.T_H,par.T_AL,par.T_AH,par.f,par.z,par.del_M,par.F_m,par.kap_X,par.kap_P,par.v,par.kap,par.kap_R,par.p_M,par.p_T,par.k_J,par.E_G,par.E_Hb,par.E_Hp,par.h_a,par.s_G,stat.E_0,stat.L_b,stat.L_i);
 csvwrite('DEB_pars_Niveoscincus_ocellatus_lowlands.csv',results);
