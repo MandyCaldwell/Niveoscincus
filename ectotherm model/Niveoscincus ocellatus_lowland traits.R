@@ -341,11 +341,11 @@ library(lattice)
 # first plot observed vs predicted SVL vs. time
 plot(debout$SVL~debout$dates,type='l',ylim=c(20,75)) # predicted SVL vs time
 
-Growth<-read.csv('c:/NicheMapR_Working/projects/Niveoscincus/N_ocellatus_Orford_growth.csv') # read in first dataset
+Growth<-read.csv('life history/N_ocellatus_Orford_growth.csv') # read in first dataset
 Growth$date<-as.POSIXct(Growth$date,format='%d/%m/%Y') # convert dates
 points(Growth$SVL~Growth$date,col='red') # plot results
 
-Growth_skeleto<-read.csv('c:/NicheMapR_Working/projects/Niveoscincus/N_ocellatus_Orford_growth_skeleto.csv') # bring in second dataset
+Growth_skeleto<-read.csv('life history/NicheMapR_Working/projects/Niveoscincus/N_ocellatus_Orford_growth_skeleto.csv') # bring in second dataset
 Growth_skeleto<-subset(Growth_skeleto,site=='Orford' & sex!='m') # choose site and sex
 #Growth_skeleto<-subset(Growth_skeleto,site=='CP' & sex!='m') # choose site and sex
 Growth_skeleto$date<-as.POSIXct(Growth_skeleto$date,format='%d/%m/%Y') # convert dates
