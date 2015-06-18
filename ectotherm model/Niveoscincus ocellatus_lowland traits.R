@@ -1,7 +1,7 @@
 ############# ectotherm model parameters ################################
 
 microin<-"/git/Niveoscincus/microclimates/Orford 2000_2013/" # subfolder containing the microclimate input data
-project.dir<-getwd()
+project.dir<-getwd() # save initial working directory
 # simulation settings
 mac<-0 # choose mac (1) or pc (0) 
 live<-1 # live (metabolism) or dead animal?
@@ -70,9 +70,9 @@ TPREF<-32.45 # preferred body temperature (animal will attempt to regulate as cl
 DELTAR<-0.1 # degrees C, temperature difference between expired and inspired air
 skinwet<-0.0 # estimated from data in Bently 1959 at 23 degrees and 34.5 degrees #0.2#0.35 # %, of surface area acting like a free water surface (e.g. most frogs are 100% wet, many lizards less than 5% wet)
 extref<-20. # %, oxygen extraction efficiency (need to check, but based on 35 deg C for a number of reptiles, from Perry, S.F., 1992. Gas exchange strategies in reptiles and the origin of the avian lung. In: Wood, S.C., Weber, R.E., Hargens, A.R., Millard, R.W. (Eds.), Physiological Adaptations in Vertebrates: Respiration, Circulation, andMetabo -  lism. Marcel Dekker, Inc., New York, pp. 149-167.)
-PFEWAT<-73. # %, fecal water (from Shine's thesis, mixed diet 75% clover, 25% mealworms)
+PFEWAT<-73. # %, fecal water (from Shine's thesis on Egernia cunninghami, mixed diet 75% clover, 25% mealworms)
 PTUREA<-0. # %, water in excreted nitrogenous waste
-FoodWater<-82#82 # 82%, water content of food (from Shine's thesis, clover)
+FoodWater<-82#82 # 82%, water content of food (from Shine's thesis on Egernia cunninghami, clover)
 minwater<-15 # %, minimum tolerated dehydration (% of wet mass) - prohibits foraging if greater than this
 raindrink<-0. # daily rainfall (mm) required for animal to rehydrate from drinking (zero means standing water always available)
 gutfill<-101 # % gut fill at which satiation occurs - if greater than 100%, animal always tries to forage
@@ -222,8 +222,8 @@ nP<-c(1,1.8,0.5,.15) # composition of product/faeces (atoms per carbon atoms for
 N_waste<-c(1,4/5,3/5,4/5) # chemical formula for nitrogenous waste product, CHON, e.g. Urea c(0,3,0,1), Uric acid c(5/5,4,3,4)
 
 # breeding life history
-clutchsize<-2. # clutch size
-clutch_ab<-c(0,0) # paramters for relationship between length and clutch size: clutch size = a*SVL-b, make zero if fixed clutch size
+clutchsize<-5. # clutch size, if using regression below, make this the max clutch size
+clutch_ab<-c(2.5,12.5) # paramters for relationship between length and clutch size: clutch size = a*SVL-b, make zero if fixed clutch size
 viviparous<-1 # 1=yes, 0=no
 batch<-1 # invoke Pequerie et al.'s batch laying model?
 
@@ -231,8 +231,8 @@ batch<-1 # invoke Pequerie et al.'s batch laying model?
 breedrainthresh<-0 # rain dependent breeder? 0 means no, otherwise enter rainfall threshold in mm
 # photoperiod response triggering ovulation, none (0), summer solstice (1), autumnal equinox (2),  
 # winter solstice (3), vernal equinox (4), specified daylength thresholds (5)
-photostart<- 0 # photoperiod initiating breeding
-photofinish<- 0 # photoperiod terminating breeding
+photostart<- 4 # photoperiod initiating breeding, 4 means that vitellogenesis doesn't start until 22nd Sept, but happens quickly, and model assumes that dev can start once activity is possible so gestation is probably starting a little early 
+photofinish<- 1 # photoperiod terminating breeding
 daylengthstart<- 12.5 # threshold daylength for initiating breeding
 daylengthfinish<- 12.5 # threshold daylength for terminating breeding
 photodirs <- 1 # is the start daylength trigger during a decrease (0) or increase (1) in day length?
@@ -336,27 +336,30 @@ colnames(rainfall)<-c("dates","rainfall")
 ############### plot results ######################
 library(lattice)
 
-plot(debout$SVL~debout$dates,type='l',ylim=c(20,70))
+# first plot observed vs predicted SVL vs. time
+plot(debout$SVL~debout$dates,type='l',ylim=c(20,75)) # predicted SVL vs time
 
-Growth<-read.csv('c:/NicheMapR_Working/projects/Niveoscincus/N_ocellatus_Orford_growth.csv')
-Growth$date<-as.POSIXct(Growth$date,format='%d/%m/%Y')
-points(Growth$SVL~Growth$date,col='red')
+Growth<-read.csv('c:/NicheMapR_Working/projects/Niveoscincus/N_ocellatus_Orford_growth.csv') # read in first dataset
+Growth$date<-as.POSIXct(Growth$date,format='%d/%m/%Y') # convert dates
+points(Growth$SVL~Growth$date,col='red') # plot results
 
-Growth_skeleto<-read.csv('c:/NicheMapR_Working/projects/Niveoscincus/N_ocellatus_Orford_growth_skeleto.csv')
-Growth_skeleto<-subset(Growth_skeleto,site=='Orford' & sex!='m')
-Growth_skeleto$date<-as.POSIXct(Growth_skeleto$date,format='%d/%m/%Y')
-points(Growth_skeleto$svl~Growth_skeleto$date,col='blue')
+Growth_skeleto<-read.csv('c:/NicheMapR_Working/projects/Niveoscincus/N_ocellatus_Orford_growth_skeleto.csv') # bring in second dataset
+Growth_skeleto<-subset(Growth_skeleto,site=='Orford' & sex!='m') # choose site and sex
+Growth_skeleto$date<-as.POSIXct(Growth_skeleto$date,format='%d/%m/%Y') # convert dates
+points(Growth_skeleto$svl~Growth_skeleto$date,col='blue') # plot results
 
-# environ<-subset(environ,VEL!=0)
-# plotenviron<-subset(environ,YEAR==1)
-# plotenviron<-environ
-# forage<-subset(plotenviron,ACT==2)
-# bask<-subset(plotenviron,ACT==1)
-# night<-subset(metout,ZEN==90)
-# with(night,plot(TIME/60~JULDAY,pch=15,cex=.5,ylab='hour of day',ylim=c(0,23),xlab='day of year'))
-# with(bask,points((TIME-1)~DAY,pch=15,cex=.5,col='blue'))
-# with(forage,points((TIME-1)~DAY,pch=15,cex=.5,col='grey'))
-
+# plot activity windows
+plotenviron<-subset(environ,YEAR<3) #choose time period
+forage<-subset(plotenviron,ACT==2) # get foraging times
+bask<-subset(plotenviron,ACT==1) # get basking times
+night<-subset(metout,ZEN==90) # get night period
+with(forage,plot((TIME-1)~DAY,pch=15,cex=.5,col='blue',ylab='hour of day',ylim=c(0,23),xlab='day of year')) # plot foraging
+with(bask,points((TIME-1)~DAY,pch=15,cex=.5,col='grey')) # plot basking
+with(night,points(TIME/60~JULDAY,pch=15,cex=.5)) # plot night hours
+actstart<-subset(plotenviron,as.character(plotenviron$dates,format='%d/%m')=="15/09" | as.character(plotenviron$dates,format='%d/%m')=="15/04") # get 15th Sept and 15th April
+actstart<-subset(actstart,as.character(actstart$dates,format='%H')=="00") # get midnight
+actstart<-subset(actstart,JULDAY>0) # get rid of years after death
+abline(v=actstart$DAY,col='grey',lty=2) # plot 15th September and 15th April for reference
 
 plotdebout<-subset(debout,as.numeric(format(debout$dates, "%Y"))<1994)
 plotdebout<-debout
@@ -389,6 +392,7 @@ abline(ctmin,0,lty=2,col='cyan',lwd=2)
 abline(TPREF,0,lty=2,col='orange',lwd=2)
 
 # code to get constant temperature equivalent (CTE) based on Arrhenius temperature function
+# !!!!!!!!!!!! run this with DEB<-0 on line 112 above so that DEB model isn't running !!!!!!!!
 
 # reference temp and 5 parameters for the Arrhenius response curve
 T_REF<-20 # degrees C, reference temperature - correction factor is 1 for this temperature
@@ -414,45 +418,3 @@ mean(TC) # report mean Tb to screen
 CTE # report constant temperature equivalent to screen
 
 
-
-
-
-
-
-
-
-
-  #summer<-subset(environ, format(environ$dates, "%m")== "10" | format(environ$dates, "%m")== "11" | format(environ$dates, "%m")== "12" | format(environ$dates, "%m")== "01" | format(environ$dates, "%m")== "02" | format(environ$dates, "%m")== "03" )
-  #growth<-subset(environ, format(environ$dates, "%m")== "01" | format(environ$dates, "%m")== "02" | format(environ$dates, "%m")== "03" | format(environ$dates, "%m")== "04" | format(environ$dates, "%m")== "05" | format(environ$dates, "%m")== "06" | format(environ$dates, "%m")== "07" | format(environ$dates, "%m")== "08" | format(environ$dates, "%m")== "09" | format(environ$dates, "%m")== "10" )
-  #summer_soil<-subset(soil, format(soil$dates, "%m")== "12")
-  #TCsumm<-summer$TC
-  #TCgrowth<-growth$TC
-  #TCsoil<-summer_soil$D30cm
-  
-  TC<-as.numeric(exp(TA*(1/(273+T_REF)-1/(273+TC)))/(1+exp(TAL*(1/(273+TC)-1/TL))+exp(TAH*(1/TH-1/(273+TC)))))
-  #plot(TC~dates)
-  mean(TC)
-  
-  Tb<-17.7# put your guess in here and then run the next line to see what TC that implies
-  exp(TA*(1/(273+T_REF)-1/(273+Tb)))/(1+exp(TAL*(1/(273+Tb)-1/TL))+exp(TAH*(1/TH-1/(273+Tb))))
-
-TC<-as.numeric(exp(TA*(1/(273+T_REF)-1/(273+TCsumm)))/(1+exp(TAL*(1/(273+TCsumm)-1/TL))+exp(TAH*(1/TH-1/(273+TCsumm)))))
-plot(TC~summer$dates)
-mean(TC)
-
-Tb<-17 # put your guess in here and then run the next line to see what TC that implies
-exp(TA*(1/(273+T_REF)-1/(273+Tb)))/(1+exp(TAL*(1/(273+Tb)-1/TL))+exp(TAH*(1/TH-1/(273+Tb))))
-
-TC<-as.numeric(exp(TA*(1/(273+T_REF)-1/(273+TCsoil)))/(1+exp(TAL*(1/(273+TCsoil)-1/TL))+exp(TAH*(1/TH-1/(273+TCsoil)))))
-plot(TC~summer$dates)
-mean(TC)
-
-Tb<-27.2 # put your guess in here and then run the next line to see what TC that implies
-exp(TA*(1/(273+T_REF)-1/(273+Tb)))/(1+exp(TAL*(1/(273+Tb)-1/TL))+exp(TAH*(1/TH-1/(273+Tb))))
-
-TC<-as.numeric(exp(TA*(1/(273+T_REF)-1/(273+TCgrowth)))/(1+exp(TAL*(1/(273+TCgrowth)-1/TL))+exp(TAH*(1/TH-1/(273+TCgrowth)))))
-plot(TC~summer$dates)
-mean(TC)
-
-Tb<-27.2 # put your guess in here and then run the next line to see what TC that implies
-exp(TA*(1/(273+T_REF)-1/(273+Tb)))/(1+exp(TAL*(1/(273+Tb)-1/TL))+exp(TAH*(1/TH-1/(273+Tb))))
