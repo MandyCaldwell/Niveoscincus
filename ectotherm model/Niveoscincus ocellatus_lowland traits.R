@@ -374,6 +374,7 @@ abline(v=year_vals$dates,col='grey',lty=2) # add lines to show beginning of each
 plot(debout$CUMBATCH/1000~debout$dates,type='l', ylab='total energy, kJ',xlab="date") # plot energy in batch buffer (yolking eggs)
 points(debout$CUMREPRO/1000~debout$dates,type='l',col='red') # plot energy in the reproduction buffer (captial for egg production, but not currently transformed to eggs)
 abline(v=year_vals$dates,col='grey',lty=2) # add lines to show beginning of each year
+plot(debout$V_baby~debout$dates,type='l', ylab='embryo structure (cm3)',xlab="date") # plot embryo development (volume of structure)
 
 # plot thermoregulation
 subdate<-subset(environ, format(environ$dates,"%y/%m")=="01/09") # use this to subset a particular year and month
