@@ -123,7 +123,7 @@ MR_3<-0.038
 
 ################### Dynamic Enregy Budget Model Parameters ################
 debpars<-as.data.frame(read.csv('DEB models/Niveoscincus_occelatus/DEB_pars_Niveoscincus_ocellatus_lowlands.csv',header=FALSE))$V1
-fract<-1
+fract<-1.22
 f<-1.
 MsM<-186.03*6. # J/cm3 produces a stomach volume of 5.3 cm3/100 g, as measured for Disosaurus dorsalis, adjusted for Egernia cunninghami
 z<-debpars[8]*fract
@@ -141,7 +141,7 @@ E_Hp<-debpars[21]*fract^3
 h_aref<-debpars[22]/(24.^2) #3.61e-11/(24.^2) 
 s_G<-debpars[23]
 
-E_Egg<-debpars[24]*fract^3# J, initial energy of one egg # this includes the residual yolk, which is eaten upon hatching
+E_Egg<-debpars[24]*fract^4# J, initial energy of one egg # this includes the residual yolk, which is eaten upon hatching
 E_m<-(p_Mref*z/kappa)/v_dotref
 p_Xm<-13290#12420 # J/h.cm2, maximum intake rate when feeding
 K<-0.01 # half-saturation constant
