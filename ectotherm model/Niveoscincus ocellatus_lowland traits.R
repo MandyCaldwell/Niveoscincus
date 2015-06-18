@@ -161,7 +161,8 @@ TAH<-debpars[6]
 TL<-debpars[3]
 TH<-debpars[4]
 
-# life-stage specific parameters
+# life-stage specific parameters, we are making these all the same for all life stages so no need to worry about this section
+
 arrhenius<-matrix(data = 0, nrow = 8, ncol = 5)
 arrhenius[,1]<-TA # critical thermal minimum
 arrhenius[,2]<-TAL # critical thermal maximum
@@ -361,33 +362,30 @@ actstart<-subset(actstart,as.character(actstart$dates,format='%H')=="00") # get 
 actstart<-subset(actstart,JULDAY>0) # get rid of years after death
 abline(v=actstart$DAY,col='grey',lty=2) # plot 15th September and 15th April for reference
 
-plotdebout<-subset(debout,as.numeric(format(debout$dates, "%Y"))<1994)
-plotdebout<-debout
-plot(plotdebout$WETMASS~plotdebout$dates,type='l')
-plot(debout$CUMBATCH~debout$dates,type='l')
-points(debout$CUMREPRO~debout$dates,type='l',col='red')
+# plot mass and reproduction phenology
+plotdebout<-subset(debout,as.numeric(format(dates, "%Y"))<1994) # use this if you want to subset particular years
+plotdebout<-debout # this just keeps it to all years
+year_vals<-subset(plotdebout,as.character(dates,format='%d/%m')=="01/01")
+year_vals<-subset(year_vals,as.character(year_vals$dates,format='%H')=="00") # get midnight
+plot(plotdebout$WETMASS~plotdebout$dates,type='l', ylab="wet mass, g",xlab="date") # plot wet mass as a function of date
+abline(v=year_vals$dates,col='grey',lty=2) # add lines to show beginning of each year
+plot(debout$CUMBATCH/1000~debout$dates,type='l', ylab='total energy, kJ',xlab="date") # plot energy in batch buffer (yolking eggs)
+points(debout$CUMREPRO/1000~debout$dates,type='l',col='red') # plot energy in the reproduction buffer (captial for egg production, but not currently transformed to eggs)
+abline(v=year_vals$dates,col='grey',lty=2) # add lines to show beginning of each year
 
-
-
-subdate<-subset(environ, format(environ$dates,"%y/%m")=="00/03")
-subdate<-environ
-with(subdate, plot(TC~dates,ylim=c(-15,50),type = "l",col='blue'))
-#with(subdate, points(ACT*5~dates,type = "l",col='pink'))
-with(subdate, points(SHADE/10~dates,type = "l",col='dark green'))
-with(plotenviron, points(DEP/10~dates,type = "l",col="brown"))
-#with(metout, points(TAREF~dates,type = "l",col="blue"))
+# plot thermoregulation
+subdate<-subset(environ, format(environ$dates,"%y/%m")=="01/09") # use this to subset a particular year and month
+#subdate<-environ # just use the whole data set
+with(subdate, plot(TC~dates,ylim=c(-15,50),type = "l",col='blue')) # plot Tb
+with(subdate, points(ACT*5~dates,type = "l",col='pink')) # plot activity
+with(subdate, points(SHADE/10~dates,type = "l",col='dark green')) # plot shade use
+with(plotenviron, points(DEP/10~dates,type = "l",col="brown")) # plot depth under ground
+with(metout, points(TAREF~dates,type = "l",col="light blue")) # plot reference (1.5m) air temp
+with(rainfall,points(rainfall~dates,type='h',col='purple'))
+# plot thermal thresholds
 abline(TMAXPR,0,lty=2,col='red',lwd=2)
 abline(TMINPR,0,lty=2,col='blue',lwd=2)
 abline(TBASK,0,lty=2,col='pink',lwd=2)
-abline(ctmin,0,lty=2,col='cyan',lwd=2)
-abline(TPREF,0,lty=2,col='orange',lwd=2)
-
-with(metout,points(TALOC~dates,type='l',col='green'))
-with(rainfall,points(rainfall~dates,type='h',col='light blue'))
-abline(20,0,col='grey',lty=2)
-with(plotenviron, points(DEP/10~dates,type = "l",col="brown"))
-abline(TMAXPR,0,lty=2,col='red',lwd=2)
-abline(TMINPR,0,lty=2,col='blue',lwd=2)
 abline(ctmin,0,lty=2,col='cyan',lwd=2)
 abline(TPREF,0,lty=2,col='orange',lwd=2)
 
