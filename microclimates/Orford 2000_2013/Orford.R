@@ -28,7 +28,7 @@ spatial<-"c:/Australian Environment/" # place where climate input files are kept
 
 ############## location and climatic data  ###################################
 sitemethod <- 0 # 0=specified single site long/lat, 1=place name search using geodis (needs internet)
-longlat<-c(147.829971,-42.557127) #c(147.274,-36.868)#c(139.3109, -33.888) #c(139.3109, -33.888) #Mt Mary site#c(139.35, -33.93)<- Kerr and Bull 2004 site #
+longlat<-c(147.829971,-42.557127) #central plateau c(146.5666667,-41.85) Orford c(147.829971,-42.557127) 
 loc <- "Orford, Tasmania" # type in a location here, used if option 1 is chosen above
 timezone<-0 # if timezone=1 (needs internet), uses GNtimezone function in package geonames to correct to local time zone (excluding daylight saving correction)
 rungads<-1 # use the Global Aerosol Database?

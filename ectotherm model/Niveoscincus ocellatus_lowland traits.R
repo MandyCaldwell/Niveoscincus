@@ -1,6 +1,7 @@
 ############# ectotherm model parameters ################################
 
 microin<-"/git/Niveoscincus/microclimates/Orford 2000_2013/" # subfolder containing the microclimate input data
+#microin<-"/git/Niveoscincus/microclimates/Central Plateau 2000_2013/" # subfolder containing the microclimate input data
 project.dir<-getwd() # save initial working directory
 # simulation settings
 mac<-0 # choose mac (1) or pc (0) 
@@ -346,6 +347,7 @@ points(Growth$SVL~Growth$date,col='red') # plot results
 
 Growth_skeleto<-read.csv('c:/NicheMapR_Working/projects/Niveoscincus/N_ocellatus_Orford_growth_skeleto.csv') # bring in second dataset
 Growth_skeleto<-subset(Growth_skeleto,site=='Orford' & sex!='m') # choose site and sex
+#Growth_skeleto<-subset(Growth_skeleto,site=='CP' & sex!='m') # choose site and sex
 Growth_skeleto$date<-as.POSIXct(Growth_skeleto$date,format='%d/%m/%Y') # convert dates
 points(Growth_skeleto$svl~Growth_skeleto$date,col='blue') # plot results
 
